@@ -10,5 +10,8 @@ class ComposerCallback
     {
         $dataDir = realpath(__DIR__ . '/../../data');
         chmod($dataDir, 0777);
+        $dbFile = $dataDir . '/app.db';
+        touch($dbFile);
+        chmod($dbFile, 0666);
     }
 }
