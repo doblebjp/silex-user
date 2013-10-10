@@ -14,8 +14,8 @@ $app['orm.em'] = $app->share(function () use ($app) {
     $isDevMode = true;
 
     $dbParams = [
-        'driver'   => 'pdo_sqlite',
-        'path'     => __DIR__ . '/../data/app.db',
+        'driver' => 'pdo_sqlite',
+        'path'   => __DIR__ . '/../data/app.db',
     ];
 
     $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, $proxyDir);
