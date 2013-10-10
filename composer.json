@@ -19,6 +19,11 @@
   "suggest": {
     "twbs/bootstrap": "~3.0"
   },
+  "scripts": {
+    "post-install-cmd": [
+      "SilexUser\\ComposerCallback::postInstall"
+    ]
+  },
   "autoload": {
     "psr-0": {
       "SilexUser": "src"
