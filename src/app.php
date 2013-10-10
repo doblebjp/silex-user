@@ -10,6 +10,7 @@ $app = new Application();
 
 $app['orm.em'] = $app->share(function () use ($app) {
     $paths = [__DIR__ . '/../src'];
+    $proxyDir = __DIR__ . '/../data';
     $isDevMode = true;
 
     $dbParams = [
@@ -17,7 +18,7 @@ $app['orm.em'] = $app->share(function () use ($app) {
         'path'     => __DIR__ . '/../data/app.db',
     ];
 
-    $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+    $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, $proxyDir);
     $entityManager = EntityManager::create($dbParams, $config);
 
     return $entityManager;
