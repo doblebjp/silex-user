@@ -1,8 +1,8 @@
 <?php
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$app = require __DIR__ . '/../app.php';
+$app = require __DIR__ . '/../src/app.php';
 
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
