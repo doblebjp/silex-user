@@ -128,7 +128,9 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return $this->assignedRoles->toArray();
+        return $this->assignedRoles->map(function (Role $role) {
+            return $role->getRole();
+        })->toArray();
     }
 
     /**
