@@ -15,7 +15,7 @@ class Role implements RoleInterface
     protected $id;
 
     /**
-     * @Column
+     * @Column(unique=true)
      */
     protected $role;
 
