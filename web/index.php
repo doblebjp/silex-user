@@ -9,6 +9,7 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 
 // services for web
@@ -20,6 +21,9 @@ $app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 
 // security firewalls
+$app->register(new SecurityServiceProvider());
+$app->register(new SilexUser\UserServiceProvider());
+
 $app['security.firewalls'] = [
     'login' => [
         'pattern' => '^/login$',
@@ -28,9 +32,7 @@ $app['security.firewalls'] = [
         'pattern' => '^/secure/',
         'form'    => ['login_path' => '/login', 'check_path' => '/secure/login_check'],
         'logout'  => ['logout_path' => '/secure/logout'],
-        'users'   => $app->share(function () use ($app) {
-            return new SilexUser\UserProvider($app['orm.em']);
-        }),
+        'users'   => $app['silex_user.user_provider'],
     ],
     'unsecured' => ['anonymous' => true],
 ];
@@ -40,21 +42,12 @@ $app['security.access_rules'] = [
     ['^/secure/user', 'ROLE_USER'],
 ];
 
-$app['security.role_hierarchy'] = [
-    'ROLE_ADMIN' => ['ROLE_USER'],
-];
-
 // controllers
 $app->get('/', function () use ($app) {
     return 'Silex user web test';
 });
 
-$app->get('/login', function () use ($app) {
-    return $app['twig']->render('login.html.twig', [
-        'error' => $app['security.last_error']($app['request']),
-        'last_username' => $app['session']->get('_security.last_username'),
-    ]);
-});
+$app->get('/login', 'silex_user.auth_controller:login');
 
 $app->get('/secure/admin', function () use ($app) {
     return 'Allowed for admin';

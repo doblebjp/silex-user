@@ -26,6 +26,4 @@ $app['orm.em'] = $app->share(function () use ($app) {
     return $entityManager;
 });
 
-$app->register(new Silex\Provider\SecurityServiceProvider());
-
 return $app;
