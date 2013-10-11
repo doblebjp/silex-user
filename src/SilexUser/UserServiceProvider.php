@@ -9,6 +9,18 @@ class UserServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        $app['silex_user.templates'] = [
+            'login'        => '@silex_user/login.html.twig',
+            'login_layout' => '@silex_user/layout.html.twig',
+        ];
+
+        $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
+            $twig->addGlobal('silex_user', ['templates' => $app['silex_user.templates']]);
+            $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../templates', 'silex_user');
+
+            return $twig;
+        }));
+
         $app['security.role_hierarchy'] = [
             'ROLE_ADMIN' => ['ROLE_USER'],
         ];

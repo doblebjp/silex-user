@@ -12,7 +12,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 
 // services for web
-$app->register(new TwigServiceProvider(), ['twig.path' => __DIR__ . '/../templates']);
+$app->register(new TwigServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new SessionServiceProvider());
 $app->register(new FormServiceProvider());
