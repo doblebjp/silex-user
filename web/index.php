@@ -22,36 +22,16 @@ $app->register(new ServiceControllerServiceProvider());
 // security firewalls
 $app->register(new SilexUser\UserServiceProvider());
 
-$app['security.firewalls'] = [
-    'login' => [
-        'pattern' => '^/login$',
-    ],
-    'secured' => [
-        'pattern' => '^/secure/',
-        'form'    => ['login_path' => '/login', 'check_path' => '/secure/login_check'],
-        'logout'  => ['logout_path' => '/secure/logout'],
-        'users'   => $app['silex_user.user_provider'],
-    ],
-    'unsecured' => ['anonymous' => true],
-];
-
-$app['security.access_rules'] = [
-    ['^/secure/admin', 'ROLE_ADMIN'],
-    ['^/secure/user', 'ROLE_USER'],
-];
-
 // controllers
 $app->get('/', function () use ($app) {
     return 'Silex user web test';
 });
 
-$app->get('/login', 'silex_user.auth_controller:login');
-
-$app->get('/secure/admin', function () use ($app) {
+$app->get('/admin/test', function () use ($app) {
     return 'Allowed for admin';
 });
 
-$app->get('/secure/user', function () use ($app) {
+$app->get('/user/test', function () use ($app) {
     return 'Allowed for admin and user';
 });
 

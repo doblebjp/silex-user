@@ -17,9 +17,29 @@ class UserServiceProvider implements ServiceProviderInterface
             return new UserProvider($app['orm.em']);
         });
 
+        $app['security.firewalls'] = [
+            'login' => [
+                'pattern' => '^/login$',
+            ],
+            'private' => [
+                'pattern' => '^/user/',
+                'form'    => ['login_path' => '/login', 'check_path' => '/user/login_check'],
+                'logout'  => ['logout_path' => '/user/logout'],
+                'users'   => $app['silex_user.user_provider'],
+            ],
+            'unsecured' => ['anonymous' => true],
+        ];
+
+        $app['security.access_rules'] = [
+            ['^/admin/', 'ROLE_ADMIN'],
+            ['^/user/', 'ROLE_USER'],
+        ];
+
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {
             return new Controller\AuthController();
         });
+
+        $app->get('/login', 'silex_user.auth_controller:login');
     }
 
     public function boot(Application $app)
