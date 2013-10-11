@@ -20,7 +20,7 @@ class Role implements RoleInterface
     protected $role;
 
     /**
-     * @ManyToMany(targetEntity="User", mappedBy="roles")
+     * @ManyToMany(targetEntity="User", mappedBy="assignedRoles")
      */
     protected $users;
 

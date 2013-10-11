@@ -66,10 +66,10 @@ class CreateUserCommand extends Command
 
         $validRoleNames = array_intersect($existingRoleNames, $roleNames);
         array_walk($roles, function ($role) use ($user, $validRoleNames) {
-            if (in_array($role->getRole(), $validRoleNames) && !$user->getRoles()->contains($role)) {
-                $user->addRole($role);
-            } elseif (!in_array($role->getRole(), $validRoleNames) && $user->getRoles()->contains($role)) {
-                $user->removeRole($role);
+            if (in_array($role->getRole(), $validRoleNames) && !$user->getAssignedRoles()->contains($role)) {
+                $user->addAssignedRole($role);
+            } elseif (!in_array($role->getRole(), $validRoleNames) && $user->getAssignedRoles()->contains($role)) {
+                $user->removeAssignedRole($role);
             }
         });
 

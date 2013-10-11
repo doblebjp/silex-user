@@ -32,7 +32,7 @@ class User implements UserInterface
     /**
      * @ManyToMany(targetEntity="Role", inversedBy="users")
      */
-    protected $roles;
+    protected $assignedRoles;
 
     /**
      * Get id
@@ -118,40 +118,17 @@ class User implements UserInterface
      */
     public function __construct()
     {
-        $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add roles
-     *
-     * @param \SilexUser\Role $roles
-     * @return User
-     */
-    public function addRole(\SilexUser\Role $roles)
-    {
-        $this->roles[] = $roles;
-
-        return $this;
-    }
-
-    /**
-     * Remove roles
-     *
-     * @param \SilexUser\Role $roles
-     */
-    public function removeRole(\SilexUser\Role $roles)
-    {
-        $this->roles->removeElement($roles);
+        $this->assignedRoles = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * Get roles
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getRoles()
     {
-        return $this->roles;
+        return $this->assignedRoles->toArray();
     }
 
     /**
@@ -160,5 +137,38 @@ class User implements UserInterface
     public function eraseCredentials()
     {
 
+    }
+
+    /**
+     * Add assignedRoles
+     *
+     * @param \SilexUser\Role $assignedRoles
+     * @return User
+     */
+    public function addAssignedRole(\SilexUser\Role $assignedRoles)
+    {
+        $this->assignedRoles[] = $assignedRoles;
+
+        return $this;
+    }
+
+    /**
+     * Remove assignedRoles
+     *
+     * @param \SilexUser\Role $assignedRoles
+     */
+    public function removeAssignedRole(\SilexUser\Role $assignedRoles)
+    {
+        $this->assignedRoles->removeElement($assignedRoles);
+    }
+
+    /**
+     * Get assignedRoles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAssignedRoles()
+    {
+        return $this->assignedRoles;
     }
 }
