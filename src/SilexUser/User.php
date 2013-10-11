@@ -15,7 +15,7 @@ class User implements UserInterface
     protected $id;
 
     /**
-     * @Column
+     * @Column(unique=true)
      */
     protected $username;
 

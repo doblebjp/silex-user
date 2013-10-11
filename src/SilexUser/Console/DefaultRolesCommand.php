@@ -32,7 +32,7 @@ class DefaultRolesCommand extends Command
         $missingRoles = array_diff($defaultRoles, $existingRoles);
 
         if (empty($missingRoles)) {
-            $output->writeln('All default roles exists');
+            $output->writeln('All default roles exist');
             return;
         }
 

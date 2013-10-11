@@ -1,7 +1,7 @@
 <?php
 
 use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Application as ConsoleApp;
+use Symfony\Component\Console\Application;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -13,10 +13,11 @@ $helperSet = new HelperSet([
     'dialog' => new DialogHelper,
 ]);
 
-$cli = new ConsoleApp('SilexUser Command Line Interface', '1.0');
+$cli = new Application('SilexUser Command Line Interface', '1.0');
 $cli->setCatchExceptions(true);
 $cli->setHelperSet($helperSet);
 $cli->addCommands([
     new SilexUser\Console\DefaultRolesCommand(),
+    new SilexUser\Console\CreateUserCommand(),
 ]);
 $cli->run();
