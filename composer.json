@@ -24,6 +24,7 @@
       "SilexUser\\Composer\\Callback::postInstall"
     ]
   },
+  "bin": ["bin/silex-user"],
   "autoload": {
     "psr-0": {
       "SilexUser": "src"

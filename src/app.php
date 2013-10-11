@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Silex\Application;
+use Silex\Provider\SecurityServiceProvider;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
@@ -25,5 +26,7 @@ $app['orm.em'] = $app->share(function () use ($app) {
 
     return $entityManager;
 });
+
+$app->register(new SecurityServiceProvider());
 
 return $app;

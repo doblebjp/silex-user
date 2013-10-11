@@ -9,7 +9,6 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 
 // services for web
@@ -21,7 +20,6 @@ $app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 
 // security firewalls
-$app->register(new SecurityServiceProvider());
 $app->register(new SilexUser\UserServiceProvider());
 
 $app['security.firewalls'] = [
