@@ -6,9 +6,12 @@ use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use Symfony\Component\Console\Helper\DialogHelper;
 
+use SilexUser\Console\ContainerHelper;
+
 $app = require __DIR__ . '/../src/app.php';
 
 $helperSet = new HelperSet([
+    'app' => new ContainerHelper($app),
     'em' => new EntityManagerHelper($app['orm.em']),
     'dialog' => new DialogHelper,
 ]);

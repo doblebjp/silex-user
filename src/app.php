@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManager;
 
 $app = new Application();
 
+$app['debug'] = true;
+
 $app['orm.em'] = $app->share(function () use ($app) {
     $paths = [__DIR__ . '/../src'];
     $proxyDir = __DIR__ . '/../data';
@@ -23,5 +25,7 @@ $app['orm.em'] = $app->share(function () use ($app) {
 
     return $entityManager;
 });
+
+$app->register(new Silex\Provider\SecurityServiceProvider());
 
 return $app;

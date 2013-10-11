@@ -40,7 +40,7 @@ class CreateUserCommand extends Command
         $username = $dialog->ask($output, 'Username: ');
         $user = $em->getRepository('SilexUser\User')->findOneByUsername($username);
         if (null !== $user) {
-            if (!$dialog->askConfirmation($output, '<question>Username exists, update data? (Y/N)</question> ', false)) {
+            if (!$dialog->askConfirmation($output, '<question>Username exists, update data? (y/n)</question> ', false)) {
                 $output->writeln('Exiting');
                 return;
             }
@@ -49,9 +49,12 @@ class CreateUserCommand extends Command
             $user->setUsername($username);
         }
 
-        if (!$user->getId() || $dialog->askConfirmation($output, '<question>Update pasword? (Y/N)</question> ', false)) {
-            $user->setPassword($dialog->askHiddenResponse($output, 'Password: '));
+        $app = $this->getHelperSet()->get('app')->getContainer();
+
+        if (!$user->getId() || $dialog->askConfirmation($output, '<question>Update pasword? (y/n)</question> ', false)) {
+            $encoder = $app['security.encoder_factory']->getEncoder($user);
             $user->setSalt(md5(date('YmdHis')));
+            $user->setPassword($encoder->encodePassword($dialog->askHiddenResponse($output, 'Password: '), $user->getSalt()));
         }
 
         $existingRoleNames = array_map(function ($role) {
@@ -72,6 +75,7 @@ class CreateUserCommand extends Command
 
         $em->persist($user);
         $em->flush();
+
         $output->writeln('User saved');
     }
 }
