@@ -8,7 +8,7 @@ use Symfony\Component\Console\Helper\DialogHelper;
 
 use SilexUser\Console\ContainerHelper;
 
-$app = require __DIR__ . '/../src/app.php';
+$app = require getcwd() . '/config/silex-user-config.php';
 
 $helperSet = new HelperSet([
     'app' => new ContainerHelper($app),
