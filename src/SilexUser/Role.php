@@ -4,24 +4,10 @@ namespace SilexUser;
 
 use Symfony\Component\Security\Core\Role\RoleInterface;
 
-/**
- * @Entity
- */
 class Role implements RoleInterface
 {
-    /**
-     * @Id @Column(type="integer") @GeneratedValue
-     */
     protected $id;
-
-    /**
-     * @Column(unique=true)
-     */
     protected $role;
-
-    /**
-     * @ManyToMany(targetEntity="User", mappedBy="assignedRoles")
-     */
     protected $users;
 
     /**

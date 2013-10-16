@@ -4,34 +4,12 @@ namespace SilexUser;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @Entity
- */
 class User implements UserInterface
 {
-    /**
-     * @Id @Column(type="integer") @GeneratedValue
-     */
     protected $id;
-
-    /**
-     * @Column(unique=true)
-     */
     protected $username;
-
-    /**
-     * @Column
-     */
     protected $password;
-
-    /**
-     * @Column
-     */
     protected $salt;
-
-    /**
-     * @ManyToMany(targetEntity="Role", inversedBy="users")
-     */
     protected $assignedRoles;
 
     /**
