@@ -25,8 +25,13 @@ class UserServiceProvider implements ServiceProviderInterface
             'ROLE_ADMIN' => ['ROLE_USER'],
         ];
 
+        $app['silex_user.entity_manager'] = $app->share(function () use ($app) {
+            $ormKey = $app['silex_user.entity_manager_key'];
+            return $app[$ormKey];
+        });
+
         $app['silex_user.user_provider'] = $app->protect(function () use ($app) {
-            return new UserProvider($app['orm.em']);
+            return new UserProvider($app['silex_user.entity_manager']);
         });
 
         $app['security.firewalls'] = [

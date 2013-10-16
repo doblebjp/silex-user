@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 
 $app = new Application();
 
+// configure entity manager
 $app['orm.em'] = $app->share(function () use ($app) {
     $paths = [__DIR__ . '/../src'];
     $proxyDir = __DIR__ . '/../data';
@@ -31,13 +32,16 @@ $app['orm.em'] = $app->share(function () use ($app) {
     return $entityManager;
 });
 
+// dependency services
 $app->register(new TwigServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new SessionServiceProvider());
-$app->register(new FormServiceProvider());
-$app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 $app->register(new SecurityServiceProvider());
-$app->register(new SilexUser\UserServiceProvider());
+
+// silex user service
+$app->register(new SilexUser\UserServiceProvider(), [
+    'silex_user.entity_manager_key' => 'orm.em',
+]);
 
 return $app;
