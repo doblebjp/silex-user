@@ -1,22 +1,22 @@
 <?php
 
 use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Application;
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
-use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use Symfony\Component\Console\Helper\DialogHelper;
-
-use SilexUser\Console\ContainerHelper;
+use Knp\Provider\ConsoleServiceProvider;
 
 $app = require getcwd() . '/config/silex-user-config.php';
 
-$helperSet = new HelperSet([
-    'app' => new ContainerHelper($app),
-    'em' => new EntityManagerHelper($app['orm.em']),
-    'dialog' => new DialogHelper,
+$app->register(new ConsoleServiceProvider(), [
+    'console.name'              => 'SilexUser Command Line Interface',
+    'console.version'           => '1.0',
+    'console.project_directory' => getcwd(),
 ]);
 
-$cli = new Application('SilexUser Command Line Interface', '1.0');
+$helperSet = new HelperSet([
+    'dialog' => new DialogHelper(),
+]);
+
+$cli = $app['console'];
 $cli->setCatchExceptions(true);
 $cli->setHelperSet($helperSet);
 $cli->addCommands([

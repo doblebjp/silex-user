@@ -2,7 +2,7 @@
 
 namespace SilexUser\Console;
 
-use Symfony\Component\Console\Command\Command;
+use Knp\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,7 +21,8 @@ class DefaultRolesCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getHelperSet()->get('em')->getEntityManager();
+        $app = $this->getSilexApplication();
+        $em = $app['silex_user.entity_manager'];
         $results = $em->createQuery('SELECT r.role FROM SilexUser\Role r')->getScalarResult();
 
         $existingRoles = array_map(function ($row) {

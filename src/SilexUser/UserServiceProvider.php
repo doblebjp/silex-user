@@ -16,7 +16,7 @@ class UserServiceProvider implements ServiceProviderInterface
 
         $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
             $twig->addGlobal('silex_user', ['templates' => $app['silex_user.templates']]);
-            $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../templates', 'silex_user');
+            $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../views', 'silex_user');
 
             return $twig;
         }));
@@ -34,7 +34,7 @@ class UserServiceProvider implements ServiceProviderInterface
                 'pattern' => '^/login$',
             ],
             'private' => [
-                'pattern' => '^/user/',
+                'pattern' => '^/(user|admin)/',
                 'form'    => ['login_path' => '/login', 'check_path' => '/user/login_check'],
                 'logout'  => ['logout_path' => '/user/logout'],
                 'users'   => $app['silex_user.user_provider'],

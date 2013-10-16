@@ -7,10 +7,12 @@
     "php": ">=5.4",
     "silex/silex": "~1.1",
     "doctrine/orm": "~2.4",
-    "twig/twig": "~1.8",
+    "twig/twig": "~1.14",
+    "symfony/doctrine-bridge": "~2.3",
     "symfony/twig-bridge": "~2.3",
     "symfony/security": "~2.3",
-    "symfony/form": "~2.3"
+    "symfony/form": "~2.3",
+    "knplabs/console-service-provider": "dev-master"
   },
   "require-dev": {
     "symfony/browser-kit": "~2.3",

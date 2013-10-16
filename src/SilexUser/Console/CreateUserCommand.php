@@ -2,7 +2,7 @@
 
 namespace SilexUser\Console;
 
-use Symfony\Component\Console\Command\Command;
+use Knp\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +22,9 @@ class CreateUserCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getHelperSet()->get('em')->getEntityManager();
+        $app = $this->getSilexApplication();
+        $em = $app['silex_user.entity_manager'];
+
         $roles = $em->getRepository('SilexUser\Role')->findAll();
 
         if (empty($roles)) {
@@ -48,8 +50,6 @@ class CreateUserCommand extends Command
             $user = new User();
             $user->setUsername($username);
         }
-
-        $app = $this->getHelperSet()->get('app')->getContainer();
 
         if (!$user->getId() || $dialog->askConfirmation($output, '<question>Update pasword? (y/n)</question> ', false)) {
             $encoder = $app['security.encoder_factory']->getEncoder($user);
@@ -77,5 +77,7 @@ class CreateUserCommand extends Command
         $em->flush();
 
         $output->writeln('User saved');
+        $output->writeln('Username: ' . $user->getUsername());
+        $output->writeln('Roles: ' . implode(', ', $user->getRoles()));
     }
 }
