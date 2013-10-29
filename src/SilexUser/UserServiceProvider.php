@@ -49,11 +49,6 @@ class UserServiceProvider implements ServiceProviderInterface
             ],
         ];
 
-        $app['security.access_rules'] = [
-            ['^/admin/', 'ROLE_ADMIN'],
-            ['^/user/', 'ROLE_USER'],
-        ];
-
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {
             return new Controller\AuthController();
         });
