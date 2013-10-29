@@ -40,13 +40,13 @@ class UserServiceProvider implements ServiceProviderInterface
             'login' => [
                 'pattern' => '^/login$',
             ],
-            'private' => [
-                'pattern' => '^/(user|admin)/',
-                'form'    => ['login_path' => '/login', 'check_path' => '/user/login_check'],
-                'logout'  => ['logout_path' => '/user/logout'],
-                'users'   => $app['silex_user.user_provider'],
+            'global' => [
+                'pattern'   => '^.*$',
+                'anonymous' => true,
+                'form'      => ['login_path' => '/login', 'check_path' => '/authenticate'],
+                'logout'    => ['logout_path' => '/logout'],
+                'users'     => $app['silex_user.user_provider'],
             ],
-            'unsecured' => ['anonymous' => true],
         ];
 
         $app['security.access_rules'] = [
@@ -58,7 +58,8 @@ class UserServiceProvider implements ServiceProviderInterface
             return new Controller\AuthController();
         });
 
-        $app->get('/login', 'silex_user.auth_controller:login');
+        $app->get('/login', 'silex_user.auth_controller:login')
+            ->bind('login');
     }
 
     public function boot(Application $app)
