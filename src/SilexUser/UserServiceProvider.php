@@ -9,15 +9,15 @@ class UserServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['silex_user.templates'] = [
-            'login'        => '@silex_user/login.html.twig',
-            'login_layout' => '@silex_user/layout.html.twig',
+        $app['silex_user.templates'] = (isset($app['silex_user.templates']) ? $app['silex_user.templates'] : []) + [
+            'login'        => '@SilexUser/login.html.twig',
+            'login_layout' => '@SilexUser/layout.html.twig',
         ];
 
         if (isset($app['twig'])) {
             $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
                 $twig->addGlobal('silex_user', ['templates' => $app['silex_user.templates']]);
-                $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../views', 'silex_user');
+                $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../views', 'SilexUser');
 
                 return $twig;
             }));
