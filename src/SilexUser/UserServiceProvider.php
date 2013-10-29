@@ -14,12 +14,14 @@ class UserServiceProvider implements ServiceProviderInterface
             'login_layout' => '@silex_user/layout.html.twig',
         ];
 
-        $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
-            $twig->addGlobal('silex_user', ['templates' => $app['silex_user.templates']]);
-            $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../views', 'silex_user');
+        if (array_key_exists('twig', $app)) {
+            $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
+                $twig->addGlobal('silex_user', ['templates' => $app['silex_user.templates']]);
+                $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../views', 'silex_user');
 
-            return $twig;
-        }));
+                return $twig;
+            }));
+        }
 
         $app['security.role_hierarchy'] = [
             'ROLE_ADMIN' => ['ROLE_USER'],
