@@ -14,7 +14,7 @@ class UserServiceProvider implements ServiceProviderInterface
             'login_layout' => '@silex_user/layout.html.twig',
         ];
 
-        if (array_key_exists('twig', $app)) {
+        if (isset($app['twig'])) {
             $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
                 $twig->addGlobal('silex_user', ['templates' => $app['silex_user.templates']]);
                 $app['twig.loader.filesystem']->addPath(__DIR__ . '/../../views', 'silex_user');
