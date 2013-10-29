@@ -37,9 +37,6 @@ class UserServiceProvider implements ServiceProviderInterface
         });
 
         $app['security.firewalls'] = [
-            'login' => [
-                'pattern' => '^/login$',
-            ],
             'global' => [
                 'pattern'   => '^.*$',
                 'anonymous' => true,
