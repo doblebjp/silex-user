@@ -9,6 +9,7 @@ class User implements UserInterface
     protected $id;
     protected $username;
     protected $password;
+    protected $email;
     protected $salt;
     protected $assignedRoles;
 
@@ -150,5 +151,28 @@ class User implements UserInterface
     public function getAssignedRoles()
     {
         return $this->assignedRoles;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }

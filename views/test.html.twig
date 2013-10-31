@@ -1,7 +1,7 @@
 {% extends silex_user.templates.layout %}
 
 {% block content %}
-<h1>SilexUser Test Page</h1>
+<h1>SilexUser Test Page {{ title|default('') }}</h1>
 
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 {% set user = app.security.token.user %}
@@ -15,6 +15,16 @@
 <p><a href="{{ path('logout') }}" class="btn btn-primary">Logout</a></p>
 {% else %}
 <p>User is not authenticated</p>
-<p><a href="{{ path('login') }}" class="btn btn-primary">Login</a></p>
+<p>
+  <a href="{{ path('login') }}" class="btn btn-primary">Login</a>
+  <a href="{{ path('register') }}" class="btn btn-primary">Register</a>
+</p>
 {% endif %}
+
+<h2>Test Access Rules</h2>
+<ul class="nav nav-pills">
+  <li><a href="{{ path('home') }}">Home</a></li>
+  <li><a href="{{ path('admin_test') }}">Admin Only</a></li>
+  <li><a href="{{ path('user_test') }}">Admin and User</a></li>
+</ul>
 {% endblock%}

@@ -10,8 +10,9 @@ class UserServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['silex_user.templates'] = (isset($app['silex_user.templates']) ? $app['silex_user.templates'] : []) + [
-            'login'  => '@SilexUser/login.html.twig',
-            'layout' => '@SilexUser/layout.html.twig',
+            'login'    => '@SilexUser/login.html.twig',
+            'register' => '@SilexUser/register.html.twig',
+            'layout'   => '@SilexUser/layout.html.twig',
         ];
 
         if (isset($app['twig'])) {
@@ -22,6 +23,10 @@ class UserServiceProvider implements ServiceProviderInterface
                 return $twig;
             }));
         }
+
+        $app['silex_user.email_as_identity'] = isset($app['silex_user.email_as_identity'])
+            ? (boolean) $app['silex_user.email_as_identity']
+            : true;
 
         $app['security.role_hierarchy'] = [
             'ROLE_ADMIN' => ['ROLE_USER'],
@@ -52,6 +57,9 @@ class UserServiceProvider implements ServiceProviderInterface
 
         $app->get('/login', 'silex_user.auth_controller:login')
             ->bind('login');
+
+        $app->get('/register', 'silex_user.auth_controller:register')
+            ->bind('register');
     }
 
     public function boot(Application $app)

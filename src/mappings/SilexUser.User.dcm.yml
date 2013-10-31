@@ -12,6 +12,9 @@ SilexUser\User:
       unique: true
     password:
       type: string
+    email:
+      type: string
+      nullable: true
     salt:
       type: string
   manyToMany:

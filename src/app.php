@@ -9,6 +9,7 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
+use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
@@ -38,6 +39,11 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new SessionServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 $app->register(new SecurityServiceProvider());
+$app->register(new FormServiceProvider());
+$app->register(new ValidatorServiceProvider());
+$app->register(new Silex\Provider\TranslationServiceProvider(), [
+    'locale_fallbacks' => ['en'],
+]);
 
 // silex user service
 $app->register(new SilexUser\UserServiceProvider(), [
