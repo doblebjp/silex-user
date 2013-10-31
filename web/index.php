@@ -12,7 +12,7 @@ $app['security.access_rules'] = [
 
 // controllers
 $app->get('/', function () use ($app) {
-    return 'Silex user web test';
+    return $app['twig']->render('@SilexUser/test.html.twig');
 });
 
 $app->get('/admin/test', function () use ($app) {

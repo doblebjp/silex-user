@@ -1,0 +1,20 @@
+{% extends silex_user.templates.layout %}
+
+{% block content %}
+<h1>SilexUser Test Page</h1>
+
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+{% set user = app.security.token.user %}
+<p>User is authenticated as {{ user.username }}</p>
+<p>Roles</p>
+<ul>
+  {% for role in user.roles %}
+    <li>{{ role }}</li>
+  {% endfor %}
+</ul>
+<p><a href="{{ path('logout') }}" class="btn btn-primary">Logout</a></p>
+{% else %}
+<p>User is not authenticated</p>
+<p><a href="{{ path('login') }}" class="btn btn-primary">Login</a></p>
+{% endif %}
+{% endblock%}
