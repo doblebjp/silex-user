@@ -1,5 +1,7 @@
 {% extends silex_user.templates.layout %}
 
+{% use '@SilexUser/widget.html.twig' %}
+
 {% block content %}
-{{ form(form) }}
+{{ block('registration_form', { form: form }) }}
 {% endblock %}

@@ -12,7 +12,14 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('password')
+            ->add('email', 'email')
+            ->add('password', 'repeated', [
+                'type' => 'password',
+                'invalid_message' => 'The password fields must match.',
+                'required' => true,
+                'first_options'  => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat Password'],
+            ])
         ;
     }
 
