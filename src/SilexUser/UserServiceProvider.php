@@ -10,8 +10,8 @@ class UserServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['silex_user.templates'] = (isset($app['silex_user.templates']) ? $app['silex_user.templates'] : []) + [
-            'login'        => '@SilexUser/login.html.twig',
-            'login_layout' => '@SilexUser/layout.html.twig',
+            'login'  => '@SilexUser/login.html.twig',
+            'layout' => '@SilexUser/layout.html.twig',
         ];
 
         if (isset($app['twig'])) {
