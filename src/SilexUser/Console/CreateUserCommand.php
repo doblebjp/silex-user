@@ -53,7 +53,7 @@ class CreateUserCommand extends Command
 
         if (!$user->getId() || $dialog->askConfirmation($output, '<question>Update pasword? (y/n)</question> ', false)) {
             $encoder = $app['security.encoder_factory']->getEncoder($user);
-            $user->setSalt(md5(date('YmdHis')));
+            $user->randomSalt();
             $user->setPassword($encoder->encodePassword($dialog->askHiddenResponse($output, 'Password: '), $user->getSalt()));
         }
 
