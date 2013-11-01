@@ -4,6 +4,8 @@ namespace SilexUser\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,7 +20,15 @@ class UserType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (!$this->emailAsIdentity) {
+        if ($this->emailAsIdentity) {
+            $builder->addEventListener(
+                FormEvents::POST_SUBMIT,
+                function (FormEvent $event) {
+                    $user = $event->getForm()->getData();
+                    $user->setUsername($user->getEmail());
+                }
+            );
+        } else {
             $builder->add('username');
         }
 
