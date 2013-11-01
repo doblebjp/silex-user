@@ -52,8 +52,16 @@ class UserServiceProvider implements ServiceProviderInterface
             ],
         ];
 
+        $app['silex_user.default_role'] = $app->share(function() use ($app) {
+            return $app['silex_user.entity_manager']->getRepository('SilexUser\Role')->findOneByRole('ROLE_USER');
+        });
+
         $app['silex_user.form.registration'] = $app->share(function () use ($app) {
-            return new UserType($app['silex_user.email_as_identity'], $app['security.encoder_factory']);
+            return new UserType(
+                $app['silex_user.email_as_identity'],
+                $app['security.encoder_factory'],
+                [$app['silex_user.default_role']]
+            );
         });
 
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {

@@ -14,11 +14,13 @@ class UserType extends AbstractType
 {
     protected $emailAsIdentity;
     protected $encoderFactory;
+    protected $roles;
 
-    public function __construct($emailAsIdentity, $encoderFactory)
+    public function __construct($emailAsIdentity, $encoderFactory, array $roles)
     {
         $this->emailAsIdentity = (boolean) $emailAsIdentity;
         $this->encoderFactory = $encoderFactory;
+        $this->roles = $roles;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -35,6 +37,7 @@ class UserType extends AbstractType
             $builder->add('username');
         }
 
+
         $builder
             ->add('email', 'email', [
                 'constraints' => [
@@ -50,19 +53,30 @@ class UserType extends AbstractType
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
             ])
-            ->addEventListener(
-                FormEvents::POST_SUBMIT,
-                function (FormEvent $event) {
-                    $user = $event->getForm()->getData();
-                    $password = $event->getForm()->get('password')->getData();
+        ;
+
+        // taking care of defaults
+        $roles = $this->roles;
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) use ($roles) {
+                $user = $event->getForm()->getData();
+                $password = $event->getForm()->get('password')->getData();
+                if (null !== $password) {
                     $user->randomSalt();
                     $encoder = $this->encoderFactory->getEncoder($user);
                     $hash = $encoder->encodePassword($password, $user->getSalt());
                     $user->setPassword($hash);
                 }
-            )
 
-        ;
+                foreach ($roles as $role) {
+                    if (!$user->getAssignedRoles()->contains($role)) {
+                        $user->addAssignedRole($role);
+                    }
+                }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
