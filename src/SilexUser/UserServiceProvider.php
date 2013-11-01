@@ -4,6 +4,7 @@ namespace SilexUser;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use SilexUser\Form\UserType;
 
 class UserServiceProvider implements ServiceProviderInterface
 {
@@ -51,6 +52,10 @@ class UserServiceProvider implements ServiceProviderInterface
             ],
         ];
 
+        $app['silex_user.form.registration'] = $app->share(function () use ($app) {
+            return new UserType($app['silex_user.email_as_identity']);
+        });
+
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {
             return new Controller\AuthController();
         });
@@ -58,7 +63,7 @@ class UserServiceProvider implements ServiceProviderInterface
         $app->get('/login', 'silex_user.auth_controller:login')
             ->bind('login');
 
-        $app->get('/register', 'silex_user.auth_controller:register')
+        $app->match('/register', 'silex_user.auth_controller:register')
             ->bind('register');
     }
 

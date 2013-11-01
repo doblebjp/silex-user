@@ -3,6 +3,8 @@
 namespace SilexUser;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class User implements UserInterface
 {
@@ -12,6 +14,14 @@ class User implements UserInterface
     protected $email;
     protected $salt;
     protected $assignedRoles;
+
+    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('username', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('username', new Assert\Length(['min' => 8]));
+        $metadata->addPropertyConstraint('password', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('email', new Assert\Email());
+    }
 
     /**
      * Get id
@@ -169,7 +179,7 @@ class User implements UserInterface
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {

@@ -5,6 +5,7 @@ namespace SilexUser\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use SilexUser\Form\UserType;
+use SilexUser\User;
 
 class AuthController
 {
@@ -18,7 +19,16 @@ class AuthController
 
     public function register(Request $request, Application $app)
     {
-        $form = $app['form.factory']->create(new UserType());
+        $form = $app['form.factory']->create($app['silex_user.form.registration'], new User());
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            try {
+
+            } catch (\Exception $e) {
+
+            }
+        }
 
         return $app['twig']->render($app['silex_user.templates']['register'], [
             'form' => $form->createView(),
