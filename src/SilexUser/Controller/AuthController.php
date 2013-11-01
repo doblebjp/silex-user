@@ -6,6 +6,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use SilexUser\Form\UserType;
 use SilexUser\User;
 
@@ -33,7 +34,9 @@ class AuthController
                 $em->flush();
                 $em->getConnection()->commit();
 
-                return $app->redirect('/login');
+                $app['security']->setToken(new UsernamePasswordToken($user, null, 'global', $user->getRoles()));
+
+                return $app->redirect('/');
 
             } catch (\Exception $e) {
                 $em->getConnection()->rollback();
