@@ -36,7 +36,10 @@ class AuthController
 
                 $app['security']->setToken(new UsernamePasswordToken($user, null, 'global', $user->getRoles()));
 
-                return $app->redirect('/');
+                $path = $app['session']->get('_security.global.target_path')
+                    ?: $app['url_generator']->generate($app['silex_user.login.default_target_path']);
+
+                return $app->redirect($path);
 
             } catch (\Exception $e) {
                 $em->getConnection()->rollback();

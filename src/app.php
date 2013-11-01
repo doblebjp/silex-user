@@ -48,6 +48,7 @@ $app->register(new Silex\Provider\TranslationServiceProvider(), [
 // silex user service
 $app->register(new SilexUser\UserServiceProvider(), [
     'silex_user.entity_manager_key' => 'orm.em',
+    'silex_user.login.default_target_path' => 'user_test',
 ]);
 
 return $app;

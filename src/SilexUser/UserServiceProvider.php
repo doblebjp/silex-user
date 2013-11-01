@@ -42,17 +42,27 @@ class UserServiceProvider implements ServiceProviderInterface
             return new UserProvider($app['silex_user.entity_manager']);
         });
 
-        $app['security.firewalls'] = [
-            'global' => [
-                'pattern'   => '^.*$',
-                'anonymous' => true,
-                'form'      => ['login_path' => '/login', 'check_path' => '/authenticate'],
-                'logout'    => ['logout_path' => '/logout'],
-                'users'     => $app['silex_user.user_provider'],
-            ],
-        ];
+        $app['silex_user.login.default_target_path'] = isset($app['silex_user.login.default_target_path'])
+            ? $app['silex_user.login.default_target_path']
+            : '/';
 
-        $app['silex_user.default_role'] = $app->share(function() use ($app) {
+        $app['security.firewalls'] = $app->share(function () use ($app) {
+            return [
+                'global' => [
+                    'pattern'   => '^.*$',
+                    'anonymous' => true,
+                    'form'      => [
+                        'login_path' => '/login',
+                        'check_path' => '/authenticate',
+                        'default_target_path' => $app['silex_user.login.default_target_path'],
+                    ],
+                    'logout'    => ['logout_path' => '/logout'],
+                    'users'     => $app['silex_user.user_provider'],
+                ],
+            ];
+        });
+
+        $app['silex_user.default_role'] = $app->share(function () use ($app) {
             return $app['silex_user.entity_manager']->getRepository('SilexUser\Role')->findOneByRole('ROLE_USER');
         });
 
