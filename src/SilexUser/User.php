@@ -185,4 +185,16 @@ class User implements UserInterface
     {
         return $this->email;
     }
+
+    public function randomSalt($length = 8)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[mt_rand(0, strlen($characters) - 1)];
+        }
+        $this->salt = $randomString;
+
+        return $this;
+    }
 }

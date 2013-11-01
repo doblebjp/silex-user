@@ -8,14 +8,17 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 
 class UserType extends AbstractType
 {
     protected $emailAsIdentity;
+    protected $encoderFactory;
 
-    public function __construct($emailAsIdentity)
+    public function __construct($emailAsIdentity, $encoderFactory)
     {
         $this->emailAsIdentity = (boolean) $emailAsIdentity;
+        $this->encoderFactory = $encoderFactory;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -47,6 +50,18 @@ class UserType extends AbstractType
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
             ])
+            ->addEventListener(
+                FormEvents::POST_SUBMIT,
+                function (FormEvent $event) {
+                    $user = $event->getForm()->getData();
+                    $password = $event->getForm()->get('password')->getData();
+                    $user->randomSalt();
+                    $encoder = $this->encoderFactory->getEncoder($user);
+                    $hash = $encoder->encodePassword($password, $user->getSalt());
+                    $user->setPassword($hash);
+                }
+            )
+
         ;
     }
 

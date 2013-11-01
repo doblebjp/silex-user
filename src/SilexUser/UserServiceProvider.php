@@ -53,7 +53,7 @@ class UserServiceProvider implements ServiceProviderInterface
         ];
 
         $app['silex_user.form.registration'] = $app->share(function () use ($app) {
-            return new UserType($app['silex_user.email_as_identity']);
+            return new UserType($app['silex_user.email_as_identity'], $app['security.encoder_factory']);
         });
 
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {
