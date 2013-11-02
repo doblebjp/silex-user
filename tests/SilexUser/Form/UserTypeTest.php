@@ -44,53 +44,27 @@ class UserTypeTest extends TypeTestCase
 
     public function testUsingUsername()
     {
-        $form = $this->factory->create(new UserType(false, $this->encoderFactory, [new Role()]));
+        $form = $this->factory->create(new UserType(false, $this->encoderFactory));
         $this->assertTrue($form->has('username'));
     }
 
     public function testEmailAsIdentity()
     {
-        $form = $this->factory->create(new UserType(true, $this->encoderFactory, [new Role()]));
+        $form = $this->factory->create(new UserType(true, $this->encoderFactory));
         $form->submit([
-            'email' => 'test@example.com'
+            'username' => 'test@example.com'
         ]);
-
-        $this->assertFalse($form->has('username'));
 
         $user = $form->getData();
         $this->assertEquals('test@example.com', $user->getUsername());
     }
 
-    public function testPasswordFieldNotMapped()
-    {
-        $form = $this->factory->create(new UserType(true, $this->encoderFactory, [new Role()]));
-        $this->assertTrue($form->has('password'));
-        $this->assertFalse($form->get('password')->getConfig()->getMapped());
-    }
-
     public function testPasswordHashIsGeneratedForUser()
     {
-        $form = $this->factory->create(new UserType(true, $this->encoderFactory, [new Role()]));
+        $form = $this->factory->create(new UserType(true, $this->encoderFactory));
         $form->submit(['password' => ['first' => 'test', 'second' => 'test']]);
         $user = $form->getData();
         $hash = $this->encoderFactory->getEncoder($user)->encodePassword('test', $user->getSalt());
         $this->assertEquals($hash, $user->getPassword());
-    }
-
-    public function testEmptyPassword()
-    {
-        $form = $this->factory->create(new UserType(true, $this->encoderFactory, [new Role()]));
-        $form->submit([]);
-        $user = $form->getData();
-        $this->assertEmpty($user->getPassword());
-    }
-
-    public function testUserIsAssignedRole()
-    {
-        $form = $this->factory->create(new UserType(true, $this->encoderFactory, [$role = new Role('ROLE_TEST')]));
-        $form->submit([]);
-        $user = $form->getData();
-        $this->assertEquals(1, $user->getAssignedRoles()->count());
-        $this->assertEquals($role, $user->getAssignedRoles()->current());
     }
 }

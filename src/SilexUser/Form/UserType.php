@@ -15,13 +15,11 @@ class UserType extends AbstractType
 {
     protected $emailAsIdentity;
     protected $encoderFactory;
-    protected $roles;
 
-    public function __construct($emailAsIdentity, $encoderFactory, array $roles)
+    public function __construct($emailAsIdentity, $encoderFactory)
     {
         $this->emailAsIdentity = (boolean) $emailAsIdentity;
         $this->encoderFactory = $encoderFactory;
-        $this->roles = $roles;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -66,20 +64,6 @@ class UserType extends AbstractType
                 $encoder = $this->encoderFactory->getEncoder($user);
                 $hash = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($hash);
-            }
-        );
-
-        // assign roles
-        $roles = $this->roles;
-        $builder->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function (FormEvent $event) use ($roles) {
-                $user = $event->getForm()->getData();
-                foreach ($roles as $role) {
-                    if (!$user->getAssignedRoles()->contains($role)) {
-                        $user->addAssignedRole($role);
-                    }
-                }
             }
         );
     }

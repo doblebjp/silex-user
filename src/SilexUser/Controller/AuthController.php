@@ -30,6 +30,8 @@ class AuthController
             $em->getConnection()->beginTransaction();
             try {
                 $user = $form->getData();
+                $user->addAssignedRole($app['silex_user.default_role']);
+
                 $em->persist($user);
                 $em->flush();
                 $em->getConnection()->commit();
