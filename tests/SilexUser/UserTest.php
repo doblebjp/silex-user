@@ -10,12 +10,40 @@ use SilexUser\User;
 class UserTest extends PHPUnit_Framework_TestCase
 {
     protected $validator;
+    protected $constraintValidatorFactory;
 
     public function setUp()
     {
+        $uniqueEntityValidatorStub
+            = $this->getMockBuilder('Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        $uniqueEntityValidatorStub
+            ->expects($this->any())
+            ->method('validate')
+            ->will($this->returnValue(null));
+
+        $constraintValidatorFactory
+            = $this->getMockBuilder('Symfony\Component\Validator\ConstraintValidatorFactory')
+                ->setMethods(['getInstance'])
+                ->getMock();
+
+        $constraintValidatorFactory
+            ->expects($this->any())
+            ->method('getInstance')
+            ->will($this->returnCallback(function ($constraint) use ($uniqueEntityValidatorStub) {
+                $classname = $constraint->validatedBy();
+                if ($classname === 'doctrine.orm.validator.unique') {
+                    return $uniqueEntityValidatorStub;
+                }
+
+                return new $classname();
+            }));
+
         $this->validator = new Validator(
             new ClassMetadataFactory(new StaticMethodLoader()),
-            new ConstraintValidatorFactory(),
+            $constraintValidatorFactory,
             new DefaultTranslator()
         );
     }
@@ -44,11 +72,11 @@ class UserTest extends PHPUnit_Framework_TestCase
         $this->assertTrue((boolean) preg_match('/value should not be blank/', $errors[0]->getMessage()));
     }
 
-    public function testUsernameLengthMinimum8()
+    public function testUsernameLengthMinimum8RegisterUsername()
     {
         $user = new User();
         $user->setUsername('test');
-        $errors = $this->validator->validate($user);
+        $errors = $this->validator->validate($user, ['RegisterUsername']);
         $this->assertEquals('username', $errors[0]->getPropertyPath());
         $this->assertTrue((boolean) preg_match('/too short/', $errors[0]->getMessage()));
     }

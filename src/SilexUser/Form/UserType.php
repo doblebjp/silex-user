@@ -70,17 +70,9 @@ class UserType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $groups = ['Default'];
-        if ($this->emailAsIdentity) {
-            $groups[] = 'RegisterEmail_CheckFirst';
-            $groups[] = 'RegisterEmail';
-        } else {
-            $groups[] = 'RegisterUsername';
-        }
-
         $resolver->setDefaults([
             'data_class' => 'SilexUser\User',
-            'validation_groups' => $groups,
+            'validation_groups' => $this->emailAsIdentity ? 'RegisterEmail' : 'RegisterUsername',
         ]);
     }
 

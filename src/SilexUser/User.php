@@ -21,24 +21,40 @@ class User implements UserInterface
         $metadata->addConstraint(new UniqueEntity([
             'fields' => 'username',
             'message' => 'Username is already taken.',
-            'groups' => ['RegisterUsername'],
+            'groups' => ['RegisterUsername']
         ]));
 
-        $metadata->addPropertyConstraint('username', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('username', new Assert\NotBlank([
+            'groups' => ['Default', 'RegisterUsername', 'RegisterEmail']
+        ]));
+
         $metadata->addPropertyConstraint('username', new Assert\Length([
             'min' => 8,
+            'groups' => ['RegisterUsername']
         ]));
 
-        $metadata->addPropertyConstraint('password', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('username', new Assert\Email([
+            'groups' => ['RegisterEmail']
+        ]));
+
+        $metadata->addPropertyConstraint('password', new Assert\NotBlank([
+            'groups' => ['Default', 'RegisterUsername', 'RegisterEmail']
+        ]));
+
         $metadata->addPropertyConstraint('password', new Assert\Length([
             'min' => 8,
             'max' => 4096,
+            'groups' => ['RegisterUsername', 'RegisterEmail']
         ]));
 
-        $metadata->addPropertyConstraint('email', new Assert\Email());
+        $metadata->addPropertyConstraint('email', new Assert\Email([
+            'groups' => ['Default', 'RegisterUsername', 'RegisterEmail']
+        ]));
 
-        $metadata->addPropertyConstraint('username', new Assert\Email([
-            'groups' => ['RegisterEmail_CheckFirst', 'RegisterEmail']
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => 'email',
+            'message' => 'This email address is already used.',
+            'groups' => ['RegisterUsername'],
         ]));
 
         $metadata->addConstraint(new UniqueEntity([

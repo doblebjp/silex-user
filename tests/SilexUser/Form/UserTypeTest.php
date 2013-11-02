@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\Extension\Validator\Type\FormTypeValidatorExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 
 class UserTypeTest extends TypeTestCase
 {
@@ -37,8 +36,9 @@ class UserTypeTest extends TypeTestCase
         $this->dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->builder = new FormBuilder(null, null, $this->dispatcher, $this->factory);
 
+        $encoder = $this->getMock('Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder');
         $this->encoderFactory = new EncoderFactory([
-            'Symfony\Component\Security\Core\User\UserInterface' => new MessageDigestPasswordEncoder()
+            'Symfony\Component\Security\Core\User\UserInterface' => $encoder
         ]);
     }
 
