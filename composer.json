@@ -16,7 +16,8 @@
     "symfony/validator": "~2.3",
     "symfony/translation": "~2.3",
     "symfony/config": "~2.3",
-    "knplabs/console-service-provider": "dev-master"
+    "knplabs/console-service-provider": "dev-master",
+    "dominikzogg/doctrine-orm-manager-registry-provider": "~1.2"
   },
   "require-dev": {
     "symfony/browser-kit": "~2.3",

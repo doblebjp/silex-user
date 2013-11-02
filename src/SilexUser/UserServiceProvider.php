@@ -5,6 +5,7 @@ namespace SilexUser;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use SilexUser\Form\UserType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator;
 
 class UserServiceProvider implements ServiceProviderInterface
 {
@@ -72,6 +73,10 @@ class UserServiceProvider implements ServiceProviderInterface
                 $app['security.encoder_factory'],
                 [$app['silex_user.default_role']]
             );
+        });
+
+        $app['silex_user.unique_entity_validator'] = $app->share(function () use ($app) {
+            return new UniqueEntityValidator($app['doctrine']);
         });
 
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {

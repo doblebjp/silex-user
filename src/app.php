@@ -13,6 +13,7 @@ use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Dominikzogg\Silex\Provider\DoctrineOrmManagerRegistryProvider;
 
 $app = new Application();
 
@@ -33,6 +34,12 @@ $app['orm.em'] = $app->share(function () use ($app) {
     return $entityManager;
 });
 
+$app['orm.ems'] = $app->share(function () use ($app) {
+    return ['default' => $app['orm.em']];
+});
+
+$app['orm.ems.default'] = 'default';
+
 // dependency services
 $app->register(new TwigServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
@@ -40,9 +47,20 @@ $app->register(new SessionServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 $app->register(new SecurityServiceProvider());
 $app->register(new FormServiceProvider());
-$app->register(new ValidatorServiceProvider());
-$app->register(new Silex\Provider\TranslationServiceProvider(), [
+$app->register(new TranslationServiceProvider(), [
     'locale_fallbacks' => ['en'],
+]);
+$app->register(new DoctrineOrmManagerRegistryProvider());
+$app['form.extensions'] = $app->share($app->extend('form.extensions', function ($extensions, $app) {
+    $extensions[] = new Symfony\Bridge\Doctrine\Form\DoctrineOrmExtension($app['doctrine']);
+
+    return $extensions;
+}));
+
+$app->register(new ValidatorServiceProvider(), [
+    'validator.validator_service_ids' => [
+        'doctrine.orm.validator.unique' => 'silex_user.unique_entity_validator'
+    ]
 ]);
 
 // silex user service

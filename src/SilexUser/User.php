@@ -5,6 +5,7 @@ namespace SilexUser;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 class User implements UserInterface
 {
@@ -17,10 +18,34 @@ class User implements UserInterface
 
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => 'username',
+            'message' => 'Username is already taken.',
+            'groups' => ['RegisterUsername'],
+        ]));
+
         $metadata->addPropertyConstraint('username', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('username', new Assert\Length(['min' => 8]));
+        $metadata->addPropertyConstraint('username', new Assert\Length([
+            'min' => 8,
+        ]));
+
         $metadata->addPropertyConstraint('password', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('password', new Assert\Length([
+            'min' => 8,
+            'max' => 4096,
+        ]));
+
         $metadata->addPropertyConstraint('email', new Assert\Email());
+
+        $metadata->addPropertyConstraint('username', new Assert\Email([
+            'groups' => ['RegisterEmail_CheckFirst', 'RegisterEmail']
+        ]));
+
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => 'username',
+            'message' => 'This email address is already used.',
+            'groups' => ['RegisterEmail'],
+        ]));
     }
 
     /**
