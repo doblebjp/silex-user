@@ -1,7 +1,66 @@
 {% extends silex_user.templates.layout %}
 
-{% use '@SilexUser/widget.html.twig' %}
+{% form_theme form _self %}
 
 {% block content %}
-{{ block('registration_form', { form: form }) }}
-{% endblock %}
+<!--.registration-form-->
+<div class="row registration-form">
+  <div class="col-md-4 col-md-offset-4">
+    <!--.panel-->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{% block title %}Register{% endblock %}</h3>
+      </div>
+      <div class="panel-body">
+        {% block form %}
+        <!--form-->
+        {{ form_start(form) }}
+          {{ form_errors(form) }}
+          {% for child in form %}
+            {% if child.vars.name  == 'password' %}
+              {{ form_row(child.first) }}
+              {{ form_row(child.second) }}
+            {% elseif child.vars.name != '_token' %}
+              {{ form_row(child) }}
+            {% endif %}
+          {% endfor %}
+          {% block buttons %}
+          <a href="{{ path('login') }}" class="btn btn-link pull-right" >Login</a>
+          <button type="submit" class="btn">Submit</button>
+          {% endblock buttons %}
+        {{ form_end(form) }}
+        <!--/form-->
+        {% endblock form %}
+      </div>
+    </div>
+    <!--/.panel-->
+  </div>
+</div>
+<!--/.registration-form-->
+{% endblock content %}
+
+{% block form_row %}
+{% spaceless %}
+  <div class="form-group{% if errors|length > 0 %} has-error{% endif %}">
+    {{ form_label(form) }}
+    {{ form_widget(form, { attr: { class: 'form-control' } }) }}
+    {{ form_errors(form) }}
+  </div>
+{% endspaceless %}
+{% endblock form_row %}
+
+{% block form_errors %}
+{% spaceless %}
+    {% if errors|length > 0 %}
+    {% set error = errors|first %}
+      {% if form.parent is empty %}
+        <div class="alert alert-dismissable alert-danger">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{ error.message }}
+        </div>
+      {% else %}
+        <span class="help-block">{{ error.message }}</span>
+      {% endif %}
+    {% endif %}
+{% endspaceless %}
+{% endblock form_errors %}
