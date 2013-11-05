@@ -4,7 +4,6 @@ namespace SilexUser;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use SilexUser\Form\UserType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator;
 
 class UserServiceProvider implements ServiceProviderInterface
@@ -64,14 +63,26 @@ class UserServiceProvider implements ServiceProviderInterface
         });
 
         $app['silex_user.default_role'] = $app->share(function () use ($app) {
-            return $app['silex_user.entity_manager']->getRepository('SilexUser\Role')->findOneByRole('ROLE_USER');
+            $class = $app['silex_user.classnames']['entity.role'];
+
+            return $app['silex_user.entity_manager']->getRepository($class)->findOneByRole('ROLE_USER');
         });
 
-        $app['silex_user.form.registration'] = $app->share(function () use ($app) {
-            return new UserType(
-                $app['silex_user.email_as_identity'],
-                $app['security.encoder_factory']
-            );
+        $app['silex_user.classnames'] = [
+            'form.user_type' => 'SilexUser\Form\UserType',
+            'entity.user' => 'SilexUser\User',
+            'entity.role' => 'SilexUser\Role',
+        ];
+
+        $app['silex_user.form_factory.registration'] = $app->protect(function () use ($app) {
+            $class = $app['silex_user.classnames']['form.user_type'];
+            $type = new $class($app['security.encoder_factory']);
+            $options = [
+                'data_class' => $app['silex_user.classnames']['entity.user'],
+                'email_as_identity' => $app['silex_user.email_as_identity'],
+            ];
+
+            return $app['form.factory']->create($type, null, $options);
         });
 
         $app['silex_user.unique_entity_validator'] = $app->share(function () use ($app) {

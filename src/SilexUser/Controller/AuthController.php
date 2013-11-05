@@ -22,7 +22,7 @@ class AuthController
 
     public function register(Request $request, Application $app)
     {
-        $form = $app['form.factory']->create($app['silex_user.form.registration']);
+        $form = $app['silex_user.form_factory.registration']();
         $em = $app['silex_user.entity_manager'];
 
         $form->handleRequest($request);

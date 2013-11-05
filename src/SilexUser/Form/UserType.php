@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
@@ -13,19 +14,17 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 class UserType extends AbstractType
 {
-    protected $emailAsIdentity;
     protected $encoderFactory;
 
-    public function __construct($emailAsIdentity, $encoderFactory)
+    public function __construct($encoderFactory)
     {
-        $this->emailAsIdentity = (boolean) $emailAsIdentity;
         $this->encoderFactory = $encoderFactory;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        if ($this->emailAsIdentity) {
+        if ($options['email_as_identity']) {
             $builder->add('username', 'text', [
                 'attr' => ['autocomplete' => 'off'],
                 'label' => 'Email',
@@ -45,7 +44,7 @@ class UserType extends AbstractType
             'second_options' => ['label' => 'Repeat Password'],
         ]);
 
-        if ($this->emailAsIdentity) {
+        if ($options['email_as_identity']) {
             $builder->addEventListener(
                 FormEvents::POST_SUBMIT,
                 function (FormEvent $event) {
@@ -72,7 +71,10 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => 'SilexUser\User',
-            'validation_groups' => $this->emailAsIdentity ? 'RegisterEmail' : 'RegisterUsername',
+            'email_as_identity' => false,
+            'validation_groups' => function (Options $options) {
+                return $options['email_as_identity'] ? 'RegisterEmail' : 'RegisterUsername';
+            },
         ]);
     }
 
