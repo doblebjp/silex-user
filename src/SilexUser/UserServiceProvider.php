@@ -4,7 +4,6 @@ namespace SilexUser;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator;
 
 class UserServiceProvider implements ServiceProviderInterface
 {
@@ -25,26 +24,23 @@ class UserServiceProvider implements ServiceProviderInterface
             }));
         }
 
-        $app['silex_user.email_as_identity'] = isset($app['silex_user.email_as_identity'])
-            ? (boolean) $app['silex_user.email_as_identity']
-            : true;
+        $app['silex_user.email_as_identity'] = true;
 
         $app['security.role_hierarchy'] = [
             'ROLE_ADMIN' => ['ROLE_USER'],
         ];
 
         $app['silex_user.entity_manager'] = $app->share(function () use ($app) {
-            $ormKey = $app['silex_user.entity_manager_key'];
-            return $app[$ormKey];
+            $key = $app['silex_user.entity_manager_key'];
+
+            return $app[$key];
         });
 
         $app['silex_user.user_provider'] = $app->protect(function () use ($app) {
             return new UserProvider($app['silex_user.entity_manager']);
         });
 
-        $app['silex_user.login.default_target_path'] = isset($app['silex_user.login.default_target_path'])
-            ? $app['silex_user.login.default_target_path']
-            : '/';
+        $app['silex_user.login.default_target_path'] = '/';
 
         $app['security.firewalls'] = $app->share(function () use ($app) {
             return [
@@ -70,8 +66,8 @@ class UserServiceProvider implements ServiceProviderInterface
 
         $app['silex_user.classnames'] = [
             'form.user_type' => 'SilexUser\Form\UserType',
-            'entity.user' => 'SilexUser\User',
-            'entity.role' => 'SilexUser\Role',
+            'entity.user'    => 'SilexUser\User',
+            'entity.role'    => 'SilexUser\Role',
         ];
 
         $app['silex_user.form_factory.registration'] = $app->protect(function () use ($app) {
@@ -83,10 +79,6 @@ class UserServiceProvider implements ServiceProviderInterface
             ];
 
             return $app['form.factory']->create($type, null, $options);
-        });
-
-        $app['silex_user.unique_entity_validator'] = $app->share(function () use ($app) {
-            return new UniqueEntityValidator($app['doctrine']);
         });
 
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {

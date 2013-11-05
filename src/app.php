@@ -59,9 +59,14 @@ $app['form.extensions'] = $app->share($app->extend('form.extensions', function (
 
 $app->register(new ValidatorServiceProvider(), [
     'validator.validator_service_ids' => [
-        'doctrine.orm.validator.unique' => 'silex_user.unique_entity_validator'
+        'doctrine.orm.validator.unique' => 'unique_entity_validator'
     ]
 ]);
+
+$app['unique_entity_validator'] = $app->share(function () use ($app) {
+    return new Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator($app['doctrine']);
+});
+
 
 // silex user service
 $app->register(new SilexUser\UserServiceProvider(), [
