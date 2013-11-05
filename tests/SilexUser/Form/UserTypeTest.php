@@ -7,11 +7,11 @@ use Symfony\Component\Form\Forms;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\Extension\Validator\Type\FormTypeValidatorExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 
 class UserTypeTest extends TypeTestCase
 {
-    protected $encoderFactory;
+    protected $passwordEncoder;
 
     protected function setUp()
     {
@@ -36,21 +36,18 @@ class UserTypeTest extends TypeTestCase
         $this->dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->builder = new FormBuilder(null, null, $this->dispatcher, $this->factory);
 
-        $encoder = $this->getMock('Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder');
-        $this->encoderFactory = new EncoderFactory([
-            'Symfony\Component\Security\Core\User\UserInterface' => $encoder
-        ]);
+        $this->passwordEncoder = $this->getMock('Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder');
     }
 
     public function testUsingUsername()
     {
-        $form = $this->factory->create(new UserType(false, $this->encoderFactory));
+        $form = $this->factory->create(new UserType($this->passwordEncoder));
         $this->assertTrue($form->has('username'));
     }
 
     public function testEmailAsIdentity()
     {
-        $form = $this->factory->create(new UserType(true, $this->encoderFactory));
+        $form = $this->factory->create(new UserType($this->passwordEncoder));
         $form->submit([
             'username' => 'test@example.com'
         ]);
@@ -61,10 +58,10 @@ class UserTypeTest extends TypeTestCase
 
     public function testPasswordHashIsGeneratedForUser()
     {
-        $form = $this->factory->create(new UserType(true, $this->encoderFactory));
+        $form = $this->factory->create(new UserType($this->passwordEncoder));
         $form->submit(['password' => ['first' => 'test', 'second' => 'test']]);
         $user = $form->getData();
-        $hash = $this->encoderFactory->getEncoder($user)->encodePassword('test', $user->getSalt());
+        $hash = $this->passwordEncoder->encodePassword('test', $user->getSalt());
         $this->assertEquals($hash, $user->getPassword());
     }
 }

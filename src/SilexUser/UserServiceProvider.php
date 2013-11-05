@@ -70,9 +70,13 @@ class UserServiceProvider implements ServiceProviderInterface
             'entity.role'    => 'SilexUser\Role',
         ];
 
+        $app['silex_user.password_encoder'] = $app->share(function () use ($app) {
+            return $app['security.encoder_factory']->getEncoder($app['silex_user.classnames']['entity.user']);
+        });
+
         $app['silex_user.form_factory.registration'] = $app->protect(function () use ($app) {
             $class = $app['silex_user.classnames']['form.user_type'];
-            $type = new $class($app['security.encoder_factory']);
+            $type = new $class($app['silex_user.password_encoder']);
             $options = [
                 'data_class' => $app['silex_user.classnames']['entity.user'],
                 'email_as_identity' => $app['silex_user.email_as_identity'],

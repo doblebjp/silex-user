@@ -38,13 +38,13 @@ class User implements UserInterface
         ]));
 
         $metadata->addPropertyConstraint('password', new Assert\NotBlank([
-            'groups' => ['Default', 'RegisterUsername', 'RegisterEmail']
+            'groups' => ['Default', 'Credentials']
         ]));
 
         $metadata->addPropertyConstraint('password', new Assert\Length([
             'min' => 8,
             'max' => 4096,
-            'groups' => ['RegisterUsername', 'RegisterEmail']
+            'groups' => ['Credentials']
         ]));
 
         $metadata->addPropertyConstraint('email', new Assert\Email([
