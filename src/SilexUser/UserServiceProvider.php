@@ -37,7 +37,7 @@ class UserServiceProvider implements ServiceProviderInterface
         });
 
         $app['silex_user.user_provider'] = $app->protect(function () use ($app) {
-            return new UserProvider($app['silex_user.entity_manager']);
+            return new UserProvider($app['silex_user.entity_manager'], $app['silex_user.classnames']['entity.user']);
         });
 
         $app['silex_user.login.default_target_path'] = '/';
