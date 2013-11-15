@@ -26,11 +26,6 @@
   "suggest": {
     "twbs/bootstrap": "~3.0"
   },
-  "scripts": {
-    "post-install-cmd": [
-      "SilexUser\\Composer\\Callback::postInstall"
-    ]
-  },
   "bin": ["bin/silex-user"],
   "autoload": {
     "psr-0": {
