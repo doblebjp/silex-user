@@ -7,13 +7,39 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+/**
+ * @Entity
+ */
 class User implements UserInterface
 {
+    /**
+     * @Id @Column(type="integer") @GeneratedValue
+     */
     protected $id;
+
+    /**
+     * @Column(length=50, unique=true)
+     */
     protected $username;
+
+    /**
+     * @Column
+     */
     protected $password;
+
+    /**
+     * @Column(nullable=true)
+     */
     protected $email;
+
+    /**
+     * @Column
+     */
     protected $salt;
+
+    /**
+     * @ManyToMany(targetEntity="Role", inversedBy="users")
+     */
     protected $assignedRoles;
 
     static public function loadValidatorMetadata(ClassMetadata $metadata)
