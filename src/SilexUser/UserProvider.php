@@ -11,17 +11,15 @@ use Doctrine\ORM\EntityManager;
 class UserProvider implements UserProviderInterface
 {
     protected $em;
-    protected $userClass;
 
-    public function __construct(EntityManager $em, $userClass)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->userClass = $userClass;
     }
 
     public function loadUserByUsername($username)
     {
-        $user = $this->em->getRepository($this->userClass)->findOneByUsername($username);
+        $user = $this->em->getRepository(Entity::$user)->findOneByUsername($username);
 
         if (null === $user) {
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
@@ -41,6 +39,6 @@ class UserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return $class === $this->userClass;
+        return $class === Entity::$user;
     }
 }

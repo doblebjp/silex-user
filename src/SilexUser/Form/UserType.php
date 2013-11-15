@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use SilexUser\Entity;
 
 class UserType extends AbstractType
 {
@@ -58,7 +59,7 @@ class UserType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'SilexUser\User',
+            'data_class' => Entity::$user,
             'email_as_identity' => false,
             'validation_groups' => function (Options $options) {
                 $groups[] = $options['email_as_identity'] ? 'RegisterEmail' : 'RegisterUsername';

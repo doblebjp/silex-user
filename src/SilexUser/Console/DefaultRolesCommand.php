@@ -7,8 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use SilexUser\Role;
+use SilexUser\Entity;
 
 class DefaultRolesCommand extends Command
 {
@@ -22,11 +21,13 @@ class DefaultRolesCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $app = $this->getSilexApplication();
-        $em = $app['silex_user.entity_manager'];
-        $results = $em->createQuery('SELECT r.role FROM SilexUser\Role r')->getScalarResult();
+        $app->boot();
 
-        $existingRoles = array_map(function ($row) {
-            return $row['role'];
+        $em = $app['silex_user.entity_manager'];
+        $results = $em->getRepository(Entity::$role)->findAll();
+
+        $existingRoles = array_map(function ($role) {
+            return $role->getRole();
         }, $results);
 
         $defaultRoles = ['ROLE_USER', 'ROLE_ADMIN'];
@@ -39,7 +40,7 @@ class DefaultRolesCommand extends Command
 
         foreach ($missingRoles as $roleName) {
             $output->writeln("Creating $roleName");
-            $role = new Role();
+            $role = new Entity::$role();
             $role->setRole($roleName);
             $em->persist($role);
         }

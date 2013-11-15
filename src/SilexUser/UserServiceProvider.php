@@ -37,7 +37,7 @@ class UserServiceProvider implements ServiceProviderInterface
         });
 
         $app['silex_user.user_provider'] = $app->protect(function () use ($app) {
-            return new UserProvider($app['silex_user.entity_manager'], $app['silex_user.classnames']['entity.user']);
+            return new UserProvider($app['silex_user.entity_manager']);
         });
 
         $app['silex_user.login.default_target_path'] = '/';
@@ -59,15 +59,12 @@ class UserServiceProvider implements ServiceProviderInterface
         });
 
         $app['silex_user.default_role'] = $app->share(function () use ($app) {
-            $class = $app['silex_user.classnames']['entity.role'];
-
-            return $app['silex_user.entity_manager']->getRepository($class)->findOneByRole('ROLE_USER');
+            return $app['silex_user.entity_manager']->getRepository(Entity::$role)->findOneByRole('ROLE_USER');
         });
 
         $app['silex_user.classnames'] = [
-            'form.user_type' => 'SilexUser\Form\UserType',
-            'entity.user'    => 'SilexUser\User',
-            'entity.role'    => 'SilexUser\Role',
+            'entity.user' => 'SilexUser\User',
+            'entity.role' => 'SilexUser\Role',
         ];
 
         $app['silex_user.password_encoder'] = $app->share(function () use ($app) {
@@ -75,12 +72,8 @@ class UserServiceProvider implements ServiceProviderInterface
         });
 
         $app['silex_user.form_factory.registration'] = $app->protect(function () use ($app) {
-            $class = $app['silex_user.classnames']['form.user_type'];
-            $type = new $class($app['silex_user.password_encoder']);
-            $options = [
-                'data_class' => $app['silex_user.classnames']['entity.user'],
-                'email_as_identity' => $app['silex_user.email_as_identity'],
-            ];
+            $type = new Form\UserType($app['silex_user.password_encoder']);
+            $options = ['email_as_identity' => $app['silex_user.email_as_identity']];
 
             return $app['form.factory']->create($type, null, $options);
         });
@@ -98,5 +91,7 @@ class UserServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
+        Entity::$user = $app['silex_user.classnames']['entity.user'];
+        Entity::$role = $app['silex_user.classnames']['entity.role'];
     }
 }

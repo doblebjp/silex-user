@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use SilexUser\Entity;
 
 class CredentialsType extends AbstractType
 {
@@ -35,7 +36,7 @@ class CredentialsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'SilexUser\User',
+            'data_class' => Entity::$user,
             'validation_groups' => ['Credentials'],
         ]);
     }
