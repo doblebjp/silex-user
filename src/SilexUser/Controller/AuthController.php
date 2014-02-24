@@ -14,6 +14,13 @@ class AuthController
 {
     public function login(Application $app)
     {
+        if ($app['security']->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $path = $app['session']->get('_security.global.target_path')
+                ?: $app['url_generator']->generate($app['silex_user.login.default_target_path']);
+
+            return $app->redirect($path);
+        }
+
         return $app['twig']->render($app['silex_user.templates']['login'], [
             'error' => $app['security.last_error']($app['request']),
             'last_username' => $app['session']->get('_security.last_username'),
