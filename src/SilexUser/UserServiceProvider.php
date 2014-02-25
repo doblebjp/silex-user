@@ -12,6 +12,7 @@ class UserServiceProvider implements ServiceProviderInterface
         $app['silex_user.templates'] = (isset($app['silex_user.templates']) ? $app['silex_user.templates'] : []) + [
             'login'    => '@SilexUser/login.html.twig',
             'register' => '@SilexUser/register.html.twig',
+            'recovery' => '@SilexUser/recovery.html.twig',
             'layout'   => '@SilexUser/layout.html.twig',
         ];
 
@@ -87,6 +88,9 @@ class UserServiceProvider implements ServiceProviderInterface
 
         $app->match('/register', 'silex_user.auth_controller:register')
             ->bind('register');
+
+        $app->match('/lost-password', 'silex_user.auth_controller:recovery')
+            ->bind('recovery');
     }
 
     public function boot(Application $app)

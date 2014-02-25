@@ -12,12 +12,16 @@
     <li>{{ role }}</li>
   {% endfor %}
 </ul>
-<p><a href="{{ path('logout') }}" class="btn btn-primary">Logout</a></p>
+<p>
+  <a href="{{ path('logout') }}" class="btn btn-primary">Logout</a>
+  <a href="{{ path('login') }}" class="btn btn-primary">Login form redirects</a>
+</p>
 {% else %}
 <p>User is not authenticated</p>
 <p>
   <a href="{{ path('login') }}" class="btn btn-primary">Login</a>
   <a href="{{ path('register') }}" class="btn btn-primary">Register</a>
+  <a href="{{ path('recovery') }}" class="btn btn-primary">Password Recovery</a>
 </p>
 {% endif %}
 

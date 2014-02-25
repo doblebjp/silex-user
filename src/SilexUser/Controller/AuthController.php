@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use SilexUser\Form\UserType;
 use SilexUser\User;
+use SilexUser\Entity;
 
 class AuthController
 {
@@ -60,6 +61,36 @@ class AuthController
 
         return $app['twig']->render($app['silex_user.templates']['register'], [
             'form' => $form->createView(),
+        ]);
+    }
+
+    public function recovery(Request $request, Application $app)
+    {
+        $form = $app['form.factory']->createBuilder('form')
+            ->add('email', 'email', ['required' => true])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        $message = null;
+
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $em = $app['silex_user.entity_manager'];
+            $user = $em->getRepository(Entity::$user)->findOneByEmail($data['email']);
+
+            if (null === $user) {
+                $form->addError(new FormError('No user account found with this email address'));
+            } else {
+                $app['session']->getFlashBag()->add('success', 'Please check your mailbox for your password reset instruction');
+
+                return $app->redirect($app['url_generator']->generate('recovery'));
+            }
+        }
+
+        return $app['twig']->render($app['silex_user.templates']['recovery'], [
+            'form' => $form->createView(),
+            'message' => $message
         ]);
     }
 }
