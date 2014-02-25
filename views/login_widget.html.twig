@@ -8,6 +8,10 @@
         <h3 class="panel-title">{% block title %}Login{% endblock %}</h3>
       </div>
       <div class="panel-body">
+        {% block message %}
+          {% include "@SilexUser/alerts.html.twig" %}
+        {% endblock message %}
+
         {% block form %}
         <!--form-->
         <form role="form" action="{{ path('authenticate') }}" method="post">

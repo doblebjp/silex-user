@@ -42,6 +42,11 @@ class User implements UserInterface
      */
     protected $assignedRoles;
 
+    /**
+     * @Column(length=64, nullable=true)
+     */
+    protected $resetToken;
+
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addConstraint(new UniqueEntity([
@@ -263,5 +268,28 @@ class User implements UserInterface
         $this->salt = $randomString;
 
         return $this;
+    }
+
+    /**
+     * Set resetToken
+     *
+     * @param string $resetToken
+     * @return User
+     */
+    public function setResetToken($resetToken)
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    /**
+     * Get resetToken
+     *
+     * @return string 
+     */
+    public function getResetToken()
+    {
+        return $this->resetToken;
     }
 }

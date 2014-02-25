@@ -13,6 +13,7 @@ class UserServiceProvider implements ServiceProviderInterface
             'login'    => '@SilexUser/login.html.twig',
             'register' => '@SilexUser/register.html.twig',
             'recovery' => '@SilexUser/recovery.html.twig',
+            'password' => '@SilexUser/password.html.twig',
             'layout'   => '@SilexUser/layout.html.twig',
         ];
 
@@ -79,6 +80,12 @@ class UserServiceProvider implements ServiceProviderInterface
             return $app['form.factory']->create($type, null, $options);
         });
 
+        $app['silex_user.form_factory.password'] = $app->protect(function (User $user) use ($app) {
+            $type = new Form\CredentialsType($app['silex_user.password_encoder']);
+
+            return $app['form.factory']->create($type, $user);
+        });
+
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {
             return new Controller\AuthController();
         });
@@ -89,8 +96,11 @@ class UserServiceProvider implements ServiceProviderInterface
         $app->match('/register', 'silex_user.auth_controller:register')
             ->bind('register');
 
-        $app->match('/lost-password', 'silex_user.auth_controller:recovery')
+        $app->match('/recover-password', 'silex_user.auth_controller:recovery')
             ->bind('recovery');
+
+        $app->match('/change-password/{token}', 'silex_user.auth_controller:password')
+            ->bind('password');
     }
 
     public function boot(Application $app)

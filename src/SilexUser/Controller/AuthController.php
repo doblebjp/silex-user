@@ -82,7 +82,12 @@ class AuthController
             if (null === $user) {
                 $form->addError(new FormError('No user account found with this email address'));
             } else {
-                $app['session']->getFlashBag()->add('success', 'Please check your mailbox for your password reset instruction');
+                $hash = hash('sha256', uniqid(mt_rand(), true), true);
+                $hash = rtrim(strtr(base64_encode($hash), '+/', '-_'), '=');
+                $user->setResetToken($hash);
+                $em->flush();
+
+                $app['session']->getFlashBag()->add('success', 'Password recovery instructions have been sent to this email address');
 
                 return $app->redirect($app['url_generator']->generate('recovery'));
             }
@@ -91,6 +96,37 @@ class AuthController
         return $app['twig']->render($app['silex_user.templates']['recovery'], [
             'form' => $form->createView(),
             'message' => $message
+        ]);
+    }
+
+    public function password($token, Request $request, Application $app)
+    {
+        $em = $app['silex_user.entity_manager'];
+        $user = $em->getRepository(Entity::$user)->findOneByResetToken($token);
+
+        if (null === $user) {
+            return $app->abort(404);
+        }
+
+        $form = $app['silex_user.form_factory.password']($user);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            try {
+                $user = $form->getData();
+                $user->setResetToken(null);
+                $em->flush();
+
+                $app['session']->getFlashBag()->add('success', 'Password updated');
+
+                return $app->redirect($app['url_generator']->generate('login'));
+            } catch (\Exception $e) {
+                $form->addError(new FormError('Password reset failed'));
+            }
+        }
+
+        return $app['twig']->render($app['silex_user.templates']['password'], [
+            'form' => $form->createView(),
         ]);
     }
 }
