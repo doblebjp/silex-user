@@ -87,6 +87,9 @@ class AuthController
                 $user->setResetToken($hash);
                 $em->flush();
 
+                // send the mail
+                $app['silex_user.mail.reset_password']($user);
+
                 $app['session']->getFlashBag()->add('success', 'Password recovery instructions have been sent to this email address');
 
                 return $app->redirect($app['url_generator']->generate('recovery'));

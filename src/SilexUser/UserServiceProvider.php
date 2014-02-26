@@ -10,11 +10,12 @@ class UserServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['silex_user.templates'] = (isset($app['silex_user.templates']) ? $app['silex_user.templates'] : []) + [
-            'login'    => '@SilexUser/login.html.twig',
-            'register' => '@SilexUser/register.html.twig',
-            'recovery' => '@SilexUser/recovery.html.twig',
-            'password' => '@SilexUser/password.html.twig',
-            'layout'   => '@SilexUser/layout.html.twig',
+            'login'      => '@SilexUser/login.html.twig',
+            'register'   => '@SilexUser/register.html.twig',
+            'recovery'   => '@SilexUser/recovery.html.twig',
+            'password'   => '@SilexUser/password.html.twig',
+            'layout'     => '@SilexUser/layout.html.twig',
+            'mail_reset' => '@SilexUser/mail_reset.txt.twig',
         ];
 
         if (isset($app['twig'])) {
@@ -84,6 +85,20 @@ class UserServiceProvider implements ServiceProviderInterface
             $type = new Form\CredentialsType($app['silex_user.password_encoder']);
 
             return $app['form.factory']->create($type, $user);
+        });
+
+        $app['silex_user.mail.sender'] = 'noreply@localhost';
+
+        $app['silex_user.mail.reset_password'] = $app->protect(function (User $user) use ($app) {
+            $message = \Swift_Message::newInstance()
+                ->setSubject('Password reset')
+                ->setFrom([$app['silex_user.mail.sender']])
+                ->setTo([$user->getEmail()])
+                ->setBody($app['twig']->render($app['silex_user.templates']['mail_reset'], [
+                    'user' => $user,
+                ]));
+
+            return $app['mailer']->send($message);
         });
 
         $app['silex_user.auth_controller'] = $app->share(function () use ($app) {

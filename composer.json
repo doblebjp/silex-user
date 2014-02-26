@@ -17,7 +17,8 @@
     "symfony/translation": "~2.3",
     "symfony/config": "~2.3",
     "knplabs/console-service-provider": "dev-master",
-    "dominikzogg/doctrine-orm-manager-registry-provider": "~1.2"
+    "dominikzogg/doctrine-orm-manager-registry-provider": "~1.2",
+    "swiftmailer/swiftmailer": "~4.1"
   },
   "require-dev": {
     "symfony/browser-kit": "~2.3",

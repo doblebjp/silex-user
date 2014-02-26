@@ -74,4 +74,10 @@ $app->register(new SilexUser\UserServiceProvider(), [
     'silex_user.login.default_target_path' => 'user_test',
 ]);
 
+// mailer
+$app->register(new Silex\Provider\SwiftmailerServiceProvider());
+$app['swiftmailer.options'] = [
+    'disable_delivery' => true,
+];
+
 return $app;
