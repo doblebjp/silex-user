@@ -47,7 +47,7 @@ class CreateUserCommand extends Command
                 return;
             }
         } else {
-            $user = new User();
+            $user = new Entity::$user();
             $user->setUsername($username);
         }
 
